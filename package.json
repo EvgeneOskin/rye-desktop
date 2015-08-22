@@ -1,0 +1,39 @@
+{
+  "name": "worksnapskiller",
+  "productName": "WorksnapsKiller",
+  "version": "0.0.1",
+  "description": "",
+  "license": "MIT",
+  "main": "main/index.js",
+  "repository": "user/repo",
+  "author": {
+    "name": "",
+    "email": "",
+    "url": ""
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-packager . $npm_package_productName --out=dist --ignore='^/dist$' --prune --asar --all --version=0.30.4"
+  },
+  "files": [
+    "main/*.js",
+    "main/*.coffee",
+    "render/*.html",
+    "render/*.css",
+    "render/*.js"
+  ],
+  "keywords": [
+    "electron-app"
+  ],
+  "dependencies": {
+    "electron-debug": "^0.1.1",
+    "coffee-script": "> 1.0.0"
+  },
+  "devDependencies": {
+    "electron-packager": "^5.0.0",
+    "electron-prebuilt": "^0.30.4"
+  }
+}
