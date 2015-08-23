@@ -8,7 +8,6 @@ class Storage
   saveCredential: (newOne) ->
     db = @db
     @getCredential().then (doc) ->
-      console.log(newOne)
       db.put newOne, doc._id, doc._rev
   getCredential: () ->
     @db.get 'auth'

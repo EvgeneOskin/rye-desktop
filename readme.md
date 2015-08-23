@@ -9,6 +9,10 @@
 $ npm install
 ```
 
+After installing new module with do:
+```
+$ ./node_modules/.bin/electron-rebuild
+```
 ### Run
 
 ```

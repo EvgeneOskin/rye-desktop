@@ -1,23 +1,36 @@
 <!doctype html>
-<html ng-app="WorksnapsKiller">
+<html ng-app="Rye">
   <head>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular-route.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular-resource.min.js"></script>
+    <script src="ui-bootstrap-tpls-0.13.3.min.js"></script>
     <meta charset="utf-8">
-    <title>WorksnapsKiller</title>
+    <title>Rye</title>
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   </head>
   <body>
-    <script src="index.js" type></script>
+    <script src="app.js"></script>
 
     <div class="container">
-      <header>
-	<h1>Login</h1>
-      </header>
-      <div ng-controller="LoginController as loginOperator" class="main">
-        <form ng-submit="loginOperator.login()">
-          <input class="btn-primary" type="submit" value="Login">
-        </form>
-        <span>{{loginOperator.response}}</span>
+      <div ng-controller="LoginController as loginOperator">
+        <nav class="navbar navbar-default">
+          <div class="navbar-left navbar-text">{{loginOperator.fullName}}</div>
+          <a class="navbar-right" href="#">
+            <img src="{{loginOperator.photo}}">
+          </a>
+        </nav>
+        <div class="main">
+	  <h1 id="login-header">Login</h1>
+          <form ng-submit="loginOperator.login()">
+            <input type="text" ng-model="loginOperator.username"  size="30"
+                   placeholder="username">
+            <input type="password" ng-model="loginOperator.password"  size="30"
+                   placeholder="password">
+            <input class="btn-primary" type="submit" value="Login">
+          </form>
+        </div>
       </div>
 
       <footer></footer>

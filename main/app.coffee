@@ -38,7 +38,8 @@ app.on 'ready', () ->
   mainWindow = createMainWindow()
 
 ipc.on 'authenticate', (event, credentials) ->
-  storage.saveCredential(credentials).then((doc) ->
-    event.sender.send doc
+  storage.saveCredential(credentials).then(() ->
+    storage.getCredential(credentials).then (doc) ->
+      event.sender.send 'authenticated', doc
   ).catch (err) ->
     console.trace err
