@@ -1,15 +1,15 @@
 {
-  "name": "worksnapskiller",
-  "productName": "WorksnapsKiller",
-  "version": "0.0.1",
+  "name": "rye",
+  "productName": "RyeDesktop",
+  "version": "0.0.2",
   "description": "",
   "license": "MIT",
   "main": "main/index.js",
-  "repository": "user/repo",
+  "repository": "EvgeneOskin/rye-desktop",
   "author": {
-    "name": "",
-    "email": "",
-    "url": ""
+    "name": "EvgeneOskin",
+    "email": "eoskin@crystalnix.com",
+    "url": "https://github.com/EvgeneOskin"
   },
   "engines": {
     "node": ">=0.10.0"
@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "electron-packager": "^5.0.0",
-    "electron-prebuilt": "^0.30.4"
+    "electron-prebuilt": "^0.30.4",
+    "electron-rebuild": "> 0.2.0"
   }
 }
