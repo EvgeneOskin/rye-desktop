@@ -29,8 +29,11 @@
     "electron-app"
   ],
   "dependencies": {
+    "coffeescript": "> 1.0.0",
     "electron-debug": "^0.1.1",
-    "coffee-script": "> 1.0.0"
+    "pouchdb": ">= 4.0.0",
+    "robotjs": "https://github.com/EvgeneOskin/robotjs/tarball/feature/get-screnshoot",
+    "temp": ">= 0.8.3"
   },
   "devDependencies": {
     "electron-packager": "^5.0.0",

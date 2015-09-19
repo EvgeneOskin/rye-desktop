@@ -1,35 +1,24 @@
-screenPersentage = 0.1
+# Usages:
+#   capturer = new Capturer
+#   capturer.captureScreen()
+#   fs.open capturer.filename, 'r', cb
+#   capturer.read cb
+
 robotjs = require 'robotjs'
 Canvas = require 'canvas'
 fs = require 'fs'
+temp = require 'temp'
 
+temp.track();
 
 class Capturer
   constructor: () ->
-    @screenSize = @getScreenSize()
-    @canvas = new Canvas @screenSize.width, @screenSize.height
-
-  getScreenSize: () ->
-    screenSize = robotjs.getScreenSize()
-    screenSize.width = screenSize.width*screenPersentage
-    screenSize.height = screenSize.height*screenPersentage
-    screenSize
+    @filename = temp.path({suffix: '.png'});
 
   captureScreen: () ->
-    ctx = @canvas.getContext '2d'
-    for x in [0 .. @screenSize.width]
-      for y in [0 .. @screenSize.height]
-        color = robotjs.getPixelColor x, y
-        ctx.fillStyle = "##{color}"
-        ctx.fillRect x, y, x+1, y+1
-    ctx.save()
+    robotjs.getScreenshoot(@filename)
 
-  storeCanvas: (out) ->
-    stream = @canvas.pngStream()
-    stream.on 'data', (chunk) ->
-      out.write chunk
+  read: (cb) ->
+    fd.read @filename, 'r', cb
 
-
-capturer = new Capturer
-capturer.captureScreen()
-capturer.storeCanvas fs.createWriteStream 'captured.png'
+module.exports = new Capturer
