@@ -38,6 +38,7 @@ export default merge(baseConfig, {
 
   externals: [
     'font-awesome',
+    'robotjs',
     'source-map-support'
   ]
 });

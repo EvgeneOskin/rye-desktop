@@ -30,6 +30,8 @@ const installExtensions = async () => {
       } catch (e) {} // eslint-disable-line
     }
   }
+
+  const robot = require("robotjs");
 };
 
 app.on('ready', async () => {
