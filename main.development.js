@@ -1,9 +1,13 @@
 import { app, BrowserWindow, Menu, shell } from 'electron';
-
+import { AutoUpdateManager } from 'auto_update';
 let menu;
 let template;
 let mainWindow = null;
+let autoUpdateManager = null;
 
+let config = {
+  'core.automaticallyUpdate': true,
+}
 
 if (process.env.NODE_ENV === 'development') {
   require('electron-debug')(); // eslint-disable-line global-require
@@ -32,6 +36,9 @@ const installExtensions = async () => {
   }
 
   const robot = require("robotjs");
+  autoUpdateManager = new AutoUpdateManager(
+    app.getVersion(), true, config
+  );
 };
 
 app.on('ready', async () => {
