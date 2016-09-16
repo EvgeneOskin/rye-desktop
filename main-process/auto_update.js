@@ -1,31 +1,28 @@
-autoUpdater = null
 import {EventEmitter} from 'events';
-path = require 'path'
+import {dialog, autoUpdater} from 'electron';
+import * as path from 'path';
 
-IdleState = 'idle'
-CheckingState = 'checking'
-DownloadingState = 'downloading'
-UpdateAvailableState = 'update-available'
-NoUpdateAvailableState = 'no-update-available'
-UnsupportedState = 'unsupported'
-ErrorState = 'error'
+const IdleState = 'idle'
+const CheckingState = 'checking'
+const DownloadingState = 'downloading'
+const UpdateAvailableState = 'update-available'
+const NoUpdateAvailableState = 'no-update-available'
+const UnsupportedState = 'unsupported'
+const ErrorState = 'error'
 
-export class AutoUpdateManager {
+export class AutoUpdateManager extends EventEmitter {
 
-  constructor: (version, testMode, config) => {
+  constructor(version, testMode, config) {
+    super();
+    console.log(`create fuck ${version}`);
     this.version, this.testMode, this.config = version, testMode, config;
-    Object.assign(this.prototype, EventEmitter.prototype);
+    console.log(`create fuck ${version}`);
     this.state = IdleState;
     this.iconPath = path.resolve(__dirname, '..', '..', 'resources', 'atom.png');
     this.feedUrl = `https://atom.io/api/updates?version=${this.version}`;
     process.nextTick(() => this.setupAutoUpdater());
-  },
-  setupAutoUpdater: () => {
-    if(process.platform === 'win32') {
-      autoUpdater = require('./auto-updater-win32');
-    } else {
-      {autoUpdater} = require('electron');
-    }
+  }
+  setupAutoUpdater() {
     autoUpdater.on('error', (event, message) => {
       this.setState(ErrorState, message);
       this.emitWindowEvent('update-error');
@@ -41,7 +38,7 @@ export class AutoUpdateManager {
       this.setState(NoUpdateAvailableState);
       this.emitWindowEvent('update-not-available');
     })
-    autoUpdater.on ('update-available', () => {
+    autoUpdater.on('update-available', () => {
       this.setState(DownloadingState);
       // We use sendMessage to send an event called 'update-available' in 'update-downloaded'
       // once the update download is complete. This mismatch between the electron
@@ -50,7 +47,8 @@ export class AutoUpdateManager {
       this.emitWindowEvent('did-begin-downloading-update');
       this.emit('did-begin-download');
     })
-    autoUpdater.on ('update-downloaded', (event, releaseNotes, @releaseVersion) => {
+    autoUpdater.on('update-downloaded', (event, releaseNotes, releaseVersion) => {
+      this.releaseVersion = releaseVersion;
       this.setState(UpdateAvailableState);
       this.emitUpdateAvailableEvent();
     })
@@ -60,40 +58,42 @@ export class AutoUpdateManager {
 
     switch(process.platform) {
       case 'win32':
-        this.setState(UnsupportedState) unless autoUpdater.supportsUpdates();
+        if (!autoUpdater.supportsUpdates()) {
+          this.setState(UnsupportedState)
+        }
         break;
       case 'linux':
         this.setState(UnsupportedState);
         break;
     }
-  },
-  emitUpdateAvailableEvent: () => {
+  }
+  emitUpdateAvailableEvent() {
     if (!this.releaseVersion) {
-      this.emitWindowEvent('update-available', {this.releaseVersion})
+      this.emitWindowEvent('update-available', this.releaseVersion)
     }
     return
-  },
-  emitWindowEvent: (eventName, payload) => {
-    for atomWindow in this.getWindows() {
+  }
+  emitWindowEvent(eventName, payload) {
+    for (atomWindow in this.getWindows()) {
       atomWindow.sendMessage(eventName, payload)
     }
     return
-  },
-  setState: (state, errorMessage) => {
+  }
+  setState(state, errorMessage) {
     if (this.state === state) {
       return;
     }
     this.state = state;
     this.errorMessage = errorMessage;
     this.emit('state-changed', this.state);
-  },
-  getState: () => {
+  }
+  getState() {
     this.state
-  },
-  getErrorMessage: () => {
+  }
+  getErrorMessage() {
     this.errorMessage
-  },
-  scheduleUpdateCheck: () => {
+  }
+  scheduleUpdateCheck() {
     // Only schedule update check periodically if running in release version and
     // and there is no existing scheduled update check.
     if (!/\w{7}/.test(this.version) || this.checkForUpdatesIntervalID) {
@@ -102,49 +102,50 @@ export class AutoUpdateManager {
       this.checkForUpdatesIntervalID = setInterval(checkForUpdates, fourHours)
       checkForUpdates()
     }
-  },
-  cancelScheduledUpdateCheck: () => {
+  }
+  cancelScheduledUpdateCheck() {
     if (this.checkForUpdatesIntervalID) {
       clearInterval(this.checkForUpdatesIntervalID)
       this.checkForUpdatesIntervalID = null
     }
-  },
-  check: ({hidePopups}={}) => {
+  }
+  check({hidePopups}={}) {
     if (!hidePopups) {
-      autoUpdater.once 'update-not-available', this.onUpdateNotAvailable
-      autoUpdater.once 'error', this.onUpdateError
+      autoUpdater.once('update-not-available', this.onUpdateNotAvailable);
+      autoUpdater.once('error', this.onUpdateError);
     }
     if (!this.testMode) {
       autoUpdater.checkForUpdates();
     }
-  },
-  install: () => {
+  }
+  install() {
     if (!this.testMode) {
       autoUpdater.quitAndInstall();
     }
-  },
-  onUpdateNotAvailable: () => {
-    autoUpdater.removeListener 'error', this.onUpdateError
-    {dialog} = require 'electron'
-    dialog.showMessageBox
-      type: 'info'
-      buttons: ['OK']
-      icon: this.iconPath
-      message: 'No update available.'
-      title: 'No Update Available'
-      detail: `Version ${this.version} is the latest version.`
-  },
-  onUpdateError: (event, message) => {
-    autoUpdater.removeListener('update-not-available', this.onUpdateNotAvailable);
-    {dialog} = require('electron');
+  }
+  onUpdateNotAvailable() {
+    autoUpdater.removeListener('error', this.onUpdateError);
     dialog.showMessageBox({
-      type: 'warning'
-      buttons: ['OK']
-      icon: this.iconPath
-      message: 'There was an error checking for updates.'
-      title: 'Update Error'
+      type: 'info',
+      buttons: ['OK'],
+      icon: this.iconPath,
+      message: 'No update available.',
+      title: 'No Update Available',
+      detail: `Version ${this.version} is the latest version.`,
+    })
+  }
+  onUpdateError(event, message) {
+    autoUpdater.removeListener('update-not-available', this.onUpdateNotAvailable);
+    dialog.showMessageBox({
+      type: 'warning',
+      buttons: ['OK'],
+      icon: this.iconPath,
+      message: 'There was an error checking for updates.',
+      title: 'Update Error',
       detail: message
     });
-  },
-  getWindows: () => global.atomApplication.windows;
+  }
+  getWindows() {
+    return global.atomApplication.windows;
+  }
 }
