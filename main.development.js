@@ -1,5 +1,5 @@
-import { app, BrowserWindow, Menu, shell } from 'electron';
-
+import { app, BrowserWindow, Menu, shell, Tray } from 'electron';
+import * as notifier from 'node-notifier';
 let menu;
 let template;
 let mainWindow = null;
@@ -36,6 +36,17 @@ const installExtensions = async () => {
   var desktop = robot.screen.capture()
   desktop.save(`${__dirname}/screencapture.png`);
 
+  const tray = new Tray(`${__dirname}/tray.png`);
+  const contextMenu = Menu.buildFromTemplate([
+    {label: 'Item1', type: 'radio'},
+    {label: 'Item2', type: 'radio'}
+  ])
+
+  tray.setToolTip('This is my application.')
+  tray.setContextMenu(contextMenu)
+
+  // String
+  console.log('before notify');
   try {
     console.log(notifier);
     let options = {
@@ -47,6 +58,7 @@ const installExtensions = async () => {
   } catch (e) {
     console.log(e);
   }
+  console.log('after notify');
 };
 
 app.on('ready', async () => {
