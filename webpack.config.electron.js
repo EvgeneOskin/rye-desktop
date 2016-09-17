@@ -32,13 +32,14 @@ export default merge(baseConfig, {
   target: 'electron-main',
 
   node: {
-    __dirname: false,
-    __filename: false
+    __dirname: true,
+    __filename: true
   },
 
   externals: [
     'font-awesome',
     'robotjs',
+    'node-notifier',
     'source-map-support'
   ]
 });

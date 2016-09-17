@@ -35,6 +35,18 @@ const installExtensions = async () => {
 
   var desktop = robot.screen.capture()
   desktop.save(`${__dirname}/screencapture.png`);
+
+  try {
+    console.log(notifier);
+    let options = {
+      'title': 'title',
+      'subtitle': 'subtitle',
+      'message': 'message',
+    };
+    notifier.NotificationCenter(options).notify(options);
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 app.on('ready', async () => {
