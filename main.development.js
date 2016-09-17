@@ -32,6 +32,9 @@ const installExtensions = async () => {
   }
 
   const robot = require("robotjs");
+
+  var desktop = robot.screen.capture()
+  desktop.save(`${__dirname}/screencapture.png`);
 };
 
 app.on('ready', async () => {
